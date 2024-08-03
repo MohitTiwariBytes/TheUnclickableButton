@@ -1,6 +1,14 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue,
+  get,
+  push,
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -10,17 +18,65 @@ const firebaseConfig = {
   storageBucket: "theunclickablebutton.appspot.com",
   messagingSenderId: "622641247499",
   appId: "1:622641247499:web:b4c966abc89cbe0a52de0e",
-  measurementId: "G-EH8FXR5HGZ"
+  measurementId: "G-EH8FXR5HGZ",
 };
 
 const button = document.getElementById("button");
 const button1 = document.getElementById("btn");
 const middle = document.getElementById("middle");
-const comments = document.getElementById("comments")
+const right = document.getElementById("right");
+
+const username = prompt("What is your name?");
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const database = getDatabase();
+
+function writeWinnerData(name) {
+  const winnersRef = ref(database, "winners");
+
+  get(winnersRef)
+    .then((snapshot) => {
+      const data = snapshot.val() || {};
+      const newKey = `winner${Object.keys(data).length + 1}`;
+
+      const updates = {};
+      updates[newKey] = name;
+
+      set(winnersRef, { ...data, ...updates })
+        .then(() => {})
+        .catch((e) => {
+          alert(e);
+        });
+    })
+    .catch((e) => {
+      alert(e);
+    });
+}
+
+function displayWinners() {
+  const winnersRef = ref(database, "winners");
+  onValue(winnersRef, (snapshot) => {
+    const data = snapshot.val();
+    right.innerHTML = "";
+
+    if (data) {
+      Object.values(data).forEach((winner) => {
+        const p = document.createElement("p");
+        p.textContent = winner;
+        p.className = "comment";
+        right.appendChild(p);
+      });
+    }
+  });
+}
+
+displayWinners();
 
 button1.addEventListener("mouseover", () => {
-  const width = middle.clientWidth; //ensure the button dont get outside the middle div
-  const height = middle.clientHeight; 
+  const width = middle.clientWidth;
+  const height = middle.clientHeight;
 
   const buttonWidth = button.offsetWidth;
   const buttonHeight = button.offsetHeight;
@@ -28,14 +84,12 @@ button1.addEventListener("mouseover", () => {
   const randomX = Math.floor(Math.random() * (width - buttonWidth));
   const randomY = Math.floor(Math.random() * (height - buttonHeight));
 
+  button.style.position = "absolute";
+  button.style.left = `${randomX}px`;
+  button.style.top = `${randomY}px`;
 });
 
 button1.addEventListener("click", () => {
-  const winnerName = prompt("You clicked me! Now enter your name to get in the winner list!");
-  comments.innerHTML += `<p class="comment">${winnerName} is a winner!</p>`;
-
+  alert("You clicked me!");
+  writeWinnerData(username);
 });
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);

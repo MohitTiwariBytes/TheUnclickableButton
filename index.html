@@ -1,42 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TheUnclickableButton</title>
+    <link href="/style.css" rel="stylesheet" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TheUnclickableButton</title>
-  <link href='/style.css' rel='stylesheet'>
-</head>
-
-<body>
-  <div class="left">
-    <div class="topLeft">
-      <h1>Comments</h1>
-    </div>
-    <div id="comments" class="comments">
-      <p class="comment">This is a comment</p>
-    </div>
-    <div class="writeComment">
-      <input type="text" placeholder="How frustated are You?">
-    </div>
-  </div>
-  <div class="main-right">
-    <div class="right"></div>
-  </div>
-  <div class="main">
-    <div id="middle" class="middle">
-      <div class="header">
-        <h1>The <strong>UnClickable Button!</strong></h1>
+  <body>
+    <div class="left">
+      <div class="topLeft">
+        <h1>Comments</h1>
       </div>
-      <div class="container">
-        <div id="button" class="button">
-
-          <button id="btn">Try Click me!</button>
+      <div id="comments" class="comments">
+        <p class="comment">This is a comment</p>
+      </div>
+      <div class="writeComment">
+        <input type="text" placeholder="How frustated are You?" />
+      </div>
+    </div>
+    <div class="main-right">
+      <div id="right" class="right"></div>
+    </div>
+    <div class="main">
+      <div id="middle" class="middle">
+        <div class="header">
+          <h1>The <strong>UnClickable Button!</strong></h1>
+        </div>
+        <div class="container">
+          <div id="button" class="button">
+            <button id="btn">Try Click me!</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <script defer type="module" src="/main.js"></script>
-</body>
-
+    <script defer type="module" src="/main.js"></script>
+  </body>
 </html>
