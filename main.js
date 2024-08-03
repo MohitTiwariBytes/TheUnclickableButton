@@ -47,7 +47,9 @@ function writeWinnerData(name) {
       updates[newKey] = name;
 
       set(winnersRef, { ...data, ...updates })
-        .then(() => {})
+        .then(() => {
+          displayWinners();
+        })
         .catch((e) => {
           alert(e);
         });
@@ -77,6 +79,8 @@ function displayWinners() {
     }
   });
 }
+
+//CODED BY MOHIT TIWARI USING THIS CODE ANYWHERE ELSE WITHOUT MY PERMISSON IS STRICTLY PROHIBITED!!!!!
 
 function writeComment(comment) {
   const commentsRef = ref(database, "/comments");
