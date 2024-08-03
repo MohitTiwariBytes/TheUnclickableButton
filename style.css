@@ -63,6 +63,7 @@ button {
   border-left: 1px solid rgb(128, 128, 128);
   height: 100%;
   position: absolute;
+  overflow-y: auto;
 }
 
 .main-right {
@@ -75,13 +76,13 @@ button {
 
 .writeComment {
   width: 270px;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   margin-top: -30px;
   position: fixed;
   bottom: 20px;
+  z-index: 1000000000;
 }
 
 .writeComment input {
@@ -101,7 +102,10 @@ button {
 }
 
 .comments {
-  margin-top: 150px;
+  height: 110%;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1000;
 }
 
 .comment {
@@ -109,4 +113,8 @@ button {
   padding: 15px;
   border-radius: 5px;
   margin-bottom: 10px;
+}
+
+.hello {
+  margin-top: 114px;
 }
