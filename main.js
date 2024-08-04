@@ -11,7 +11,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCg-C0t2dLDwllNKktLTavrkOC56UgQREY",
+  apiKey: process.env.API_KEY,
   authDomain: "the-unclickable-button.firebaseapp.com",
   projectId: "the-unclickable-button",
   storageBucket: "the-unclickable-button.appspot.com",
