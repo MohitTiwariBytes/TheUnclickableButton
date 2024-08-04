@@ -11,13 +11,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD3GsDpEhDGxT5t1Pp5Xv9Q8pSCZdptaLY",
-  authDomain: "theunclickablebutton.firebaseapp.com",
-  projectId: "theunclickablebutton",
-  storageBucket: "theunclickablebutton.appspot.com",
-  messagingSenderId: "622641247499",
-  appId: "1:622641247499:web:b4c966abc89cbe0a52de0e",
-  measurementId: "G-EH8FXR5HGZ",
+  apiKey: "AIzaSyCg-C0t2dLDwllNKktLTavrkOC56UgQREY",
+  authDomain: "the-unclickable-button.firebaseapp.com",
+  projectId: "the-unclickable-button",
+  storageBucket: "the-unclickable-button.appspot.com",
+  messagingSenderId: "414856785144",
+  appId: "1:414856785144:web:bca19557552a1009a9df0d",
+  measurementId: "G-LS39WJB6Q5",
 };
 
 // Initialize Firebase
@@ -26,7 +26,7 @@ const analytics = getAnalytics(app);
 const database = getDatabase();
 
 const button = document.getElementById("button");
-const button1 = document.getElementById("btn");
+const xyzos = document.getElementById("xyzos");
 const middle = document.getElementById("middle");
 const commentText = document.getElementById("commentText");
 const right = document.getElementById("right");
@@ -37,12 +37,19 @@ let alerted = false;
 
 function writeWinnerData(name) {
   const winnersRef = ref(database, "winners");
-
   get(winnersRef)
     .then((snapshot) => {
       const data = snapshot.val() || {};
-      const newKey = `winner${Object.keys(data).length + 1}`;
 
+      // Check if the winner already exists
+      const isDuplicate = Object.values(data).includes(name);
+
+      if (isDuplicate) {
+        alert("This winner has already been added!");
+        return;
+      }
+
+      const newKey = `winner${Object.keys(data).length + 1}`;
       const updates = {};
       updates[newKey] = name;
 
@@ -157,22 +164,20 @@ function displayComments() {
 displayWinners();
 displayComments();
 
-button1.addEventListener("mouseover", () => {
+xyzos.addEventListener("mouseover", () => {
   const width = middle.clientWidth;
   const height = middle.clientHeight;
 
-  const buttonWidth = button.offsetWidth;
-  const buttonHeight = button.offsetHeight;
+  const buttonWidth = xyzos.offsetWidth;
+  const buttonHeight = xyzos.offsetHeight;
 
   const randomX = Math.floor(Math.random() * (width - buttonWidth));
   const randomY = Math.floor(Math.random() * (height - buttonHeight));
-
   button.style.position = "absolute";
   button.style.left = `${randomX}px`;
   button.style.top = `${randomY}px`;
 });
-
-button1.addEventListener("click", () => {
+xyzos.addEventListener("click", () => {
   alert("You clicked me!");
   writeWinnerData(username);
 });
