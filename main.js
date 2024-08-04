@@ -10,7 +10,6 @@ import {
   push,
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyD3GsDpEhDGxT5t1Pp5Xv9Q8pSCZdptaLY",
   authDomain: "theunclickablebutton.firebaseapp.com",
@@ -21,6 +20,11 @@ const firebaseConfig = {
   measurementId: "G-EH8FXR5HGZ",
 };
 
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const database = getDatabase();
+
 const button = document.getElementById("button");
 const button1 = document.getElementById("btn");
 const middle = document.getElementById("middle");
@@ -29,11 +33,7 @@ const right = document.getElementById("right");
 const comments = document.getElementById("comments");
 
 const username = prompt("What is your name?");
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const database = getDatabase();
+let alerted = false;
 
 function writeWinnerData(name) {
   const winnersRef = ref(database, "winners");
@@ -58,6 +58,7 @@ function writeWinnerData(name) {
       alert(e);
     });
 }
+
 function displayWinners() {
   const winnersRef = ref(database, "winners");
   onValue(winnersRef, (snapshot) => {
@@ -68,7 +69,14 @@ function displayWinners() {
       right.innerHTML += `<h1 class=${"topLeft"}>Winners</h1>
                           <div id="hello" class="hello"> </div>`;
       const hello = document.getElementById("hello");
-      Object.values(data).forEach((winner) => {
+
+      const sortedWinners = Object.entries(data).sort(([keyA], [keyB]) => {
+        const numA = parseInt(keyA.replace(/\D/g, ""), 10);
+        const numB = parseInt(keyB.replace(/\D/g, ""), 10);
+        return numA - numB;
+      });
+
+      sortedWinners.forEach(([key, winner]) => {
         const p = document.createElement("p");
         p.textContent = winner;
         p.className = "comment";
@@ -76,7 +84,7 @@ function displayWinners() {
       });
     } else {
       right.innerHTML += `<h1 class=${"topLeft"}>Winners</h1>
-      <div id="hello" class="hello"> </div>`;
+                          <div id="hello" class="hello"> </div>`;
       const hello = document.getElementById("hello");
       const p = document.createElement("p");
       p.textContent = "No winners yet!";
@@ -86,9 +94,7 @@ function displayWinners() {
   });
 }
 
-//CODED BY MOHIT TIWARI USING THIS CODE ANYWHERE ELSE WITHOUT MY PERMISSON IS STRICTLY PROHIBITED!!!!!
-
-function writeComment(comment, commentBy) {
+function writeComment(comment) {
   const commentsRef = ref(database, "/comments");
   get(commentsRef)
     .then((snapshot) => {
@@ -99,7 +105,9 @@ function writeComment(comment, commentBy) {
       updates[newKey] = comment;
 
       set(commentsRef, { ...data, ...updates })
-        .then(() => {})
+        .then(() => {
+          displayComments();
+        })
         .catch((e) => {
           alert(e);
         });
@@ -119,7 +127,16 @@ function displayComments() {
       comments.innerHTML += `<h1 class=${"topLeft"}>Comments</h1>
                           <div id="hello" class="hello"> </div>`;
       const hello = document.getElementById("hello");
-      Object.values(data).forEach((comment) => {
+
+      // Convert data to an array of [key, value] pairs
+      const sortedComments = Object.entries(data).sort(([keyA], [keyB]) => {
+        // Extract numbers and sort by them
+        const numA = parseInt(keyA.replace(/\D/g, ""), 10);
+        const numB = parseInt(keyB.replace(/\D/g, ""), 10);
+        return numA - numB;
+      });
+
+      sortedComments.forEach(([key, comment]) => {
         const p = document.createElement("p");
         p.textContent = comment;
         p.className = "comment";
@@ -136,10 +153,9 @@ function displayComments() {
     }
   });
 }
+
 displayWinners();
 displayComments();
-
-console.log("Hello");
 
 button1.addEventListener("mouseover", () => {
   const width = middle.clientWidth;
@@ -150,10 +166,6 @@ button1.addEventListener("mouseover", () => {
 
   const randomX = Math.floor(Math.random() * (width - buttonWidth));
   const randomY = Math.floor(Math.random() * (height - buttonHeight));
-
-  button.style.position = "absolute";
-  button.style.left = `${randomX}px`;
-  button.style.top = `${randomY}px`;
 });
 
 button1.addEventListener("click", () => {
@@ -168,3 +180,18 @@ commentText.addEventListener("keypress", (e) => {
   }
 });
 
+comments.addEventListener("click", () => {
+  commentText.style.opacity = 0;
+  if (alerted != true) {
+    alert(
+      "Click on the comment section to hide the comment input and then Press `C` to comment again"
+    );
+    alerted = true;
+  }
+});
+
+window.addEventListener("keypress", (e) => {
+  if (e.key === "c") {
+    commentText.style.opacity = 1;
+  }
+});
