@@ -7,8 +7,9 @@ import {
   set,
   onValue,
   get,
-  push,
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+import Filter from "https://cdn.jsdelivr.net/npm/bad-words@3.0.4/+esm";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCg-C0t2dLDwllNKktLTavrkOC56UgQREY",
@@ -25,6 +26,8 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const database = getDatabase();
 
+const filter = new Filter();
+
 const button = document.getElementById("button");
 const xyzos = document.getElementById("xyzos");
 const middle = document.getElementById("middle");
@@ -32,175 +35,194 @@ const commentText = document.getElementById("commentText");
 const right = document.getElementById("right");
 const comments = document.getElementById("comments");
 
-const username = prompt("What is your name?");
-let alerted = false;
+function startTheGame() {
+  let username = prompt("What is your name?");
 
-function writeWinnerData(name) {
-  const winnersRef = ref(database, "winners");
-  get(winnersRef)
-    .then((snapshot) => {
-      const data = snapshot.val() || {};
+  if (username !== null && username !== "") {
+    // Check if the username contains bad words
+    if (filter.isProfane(username)) {
+      alert("Bad words aren't allowed in usernames!");
+      startTheGame(); // Prompt the user to enter a different username
+      return;
+    }
 
-      // Check if the winner already exists
-      const isDuplicate = Object.values(data).includes(name);
+    function writeWinnerData(name) {
+      const winnersRef = ref(database, "winners");
+      get(winnersRef)
+        .then((snapshot) => {
+          const data = snapshot.val() || {};
 
-      if (isDuplicate) {
-        alert("This winner has already been added!");
-        return;
+          // Check if the winner already exists
+          const isDuplicate = Object.values(data).includes(name);
+
+          if (isDuplicate) {
+            alert("This winner has already been added!");
+            return;
+          }
+
+          const newKey = `winner${Object.keys(data).length + 1}`;
+          const updates = {};
+          updates[newKey] = name;
+
+          set(winnersRef, { ...data, ...updates })
+            .then(() => {
+              displayWinners();
+            })
+            .catch((e) => {
+              alert(e);
+            });
+        })
+        .catch((e) => {
+          alert(e);
+        });
+    }
+
+    function displayWinners() {
+      const winnersRef = ref(database, "winners");
+      onValue(winnersRef, (snapshot) => {
+        const data = snapshot.val();
+        right.innerHTML = "";
+
+        if (data) {
+          right.innerHTML += `<h1 class=${"topLeft"}>Winners</h1>
+                          <div id="hello" class="hello"> </div>`;
+          const hello = document.getElementById("hello");
+
+          const sortedWinners = Object.entries(data).sort(([keyA], [keyB]) => {
+            const numA = parseInt(keyA.replace(/\D/g, ""), 10);
+            const numB = parseInt(keyB.replace(/\D/g, ""), 10);
+            return numA - numB;
+          });
+
+          sortedWinners.forEach(([key, winner]) => {
+            const p = document.createElement("p");
+            p.textContent = winner;
+            p.className = "comment";
+            right.appendChild(p);
+          });
+        } else {
+          right.innerHTML += `<h1 class=${"topLeft"}>Winners</h1>
+                          <div id="hello" class="hello"> </div>`;
+          const hello = document.getElementById("hello");
+          const p = document.createElement("p");
+          p.textContent = "No winners yet!";
+          p.className = "comment";
+          right.appendChild(p);
+        }
+      });
+    }
+
+    function writeComment(comment) {
+      const commentsRef = ref(database, "/comments");
+      get(commentsRef)
+        .then((snapshot) => {
+          const data = snapshot.val() || {};
+          const newKey = `comment${Object.keys(data).length + 1}`;
+
+          const updates = {};
+          updates[newKey] = filter.clean(comment); // Check if the comment has bad words before saving
+
+          set(commentsRef, { ...data, ...updates })
+            .then(() => {
+              displayComments();
+            })
+            .catch((e) => {
+              alert(e);
+            });
+        })
+        .catch((e) => {
+          alert(e);
+        });
+    }
+
+    function displayComments() {
+      const commentsRef = ref(database, "/comments");
+      onValue(commentsRef, (snapshot) => {
+        const data = snapshot.val();
+        comments.innerHTML = "";
+
+        if (data) {
+          comments.innerHTML += `<h1 class=${"topLeft"}>Comments</h1>
+                          <div id="hello" class="hello"> </div>`;
+          const hello = document.getElementById("hello");
+
+          // Convert data to an array of [key, value] pairs
+          const sortedComments = Object.entries(data).sort(([keyA], [keyB]) => {
+            // Extract numbers and sort by them
+            const numA = parseInt(keyA.replace(/\D/g, ""), 10);
+            const numB = parseInt(keyB.replace(/\D/g, ""), 10);
+            return numA - numB;
+          });
+
+          sortedComments.forEach(([key, comment]) => {
+            const p = document.createElement("p");
+            p.textContent = comment;
+            p.className = "comment";
+            comments.appendChild(p);
+          });
+        } else {
+          comments.innerHTML += `<h1 class=${"topLeft"}>Comments</h1>
+                          <div id="hello" class="hello"> </div>`;
+          const hello = document.getElementById("hello");
+          const p = document.createElement("p");
+          p.textContent = "No comments yet!";
+          p.className = "comment";
+          comments.appendChild(p);
+        }
+      });
+    }
+
+    displayWinners();
+    displayComments();
+
+    xyzos.addEventListener("mouseover", () => {
+      const width = middle.clientWidth;
+      const height = middle.clientHeight;
+
+      const buttonWidth = xyzos.offsetWidth;
+      const buttonHeight = xyzos.offsetHeight;
+
+      const randomX = Math.floor(Math.random() * (width - buttonWidth));
+      const randomY = Math.floor(Math.random() * (height - buttonHeight));
+      button.style.position = "absolute";
+      button.style.left = `${randomX}px`;
+      button.style.top = `${randomY}px`;
+    });
+    xyzos.addEventListener("click", () => {
+      alert("You clicked me!");
+      writeWinnerData(username);
+    });
+
+    commentText.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        if (commentText.value != "") {
+          writeComment(username + ": " + commentText.value);
+          commentText.value = "";
+        } else {
+          commentText.value = "";
+        }
       }
-
-      const newKey = `winner${Object.keys(data).length + 1}`;
-      const updates = {};
-      updates[newKey] = name;
-
-      set(winnersRef, { ...data, ...updates })
-        .then(() => {
-          displayWinners();
-        })
-        .catch((e) => {
-          alert(e);
-        });
-    })
-    .catch((e) => {
-      alert(e);
     });
-}
 
-function displayWinners() {
-  const winnersRef = ref(database, "winners");
-  onValue(winnersRef, (snapshot) => {
-    const data = snapshot.val();
-    right.innerHTML = "";
-
-    if (data) {
-      right.innerHTML += `<h1 class=${"topLeft"}>Winners</h1>
-                          <div id="hello" class="hello"> </div>`;
-      const hello = document.getElementById("hello");
-
-      const sortedWinners = Object.entries(data).sort(([keyA], [keyB]) => {
-        const numA = parseInt(keyA.replace(/\D/g, ""), 10);
-        const numB = parseInt(keyB.replace(/\D/g, ""), 10);
-        return numA - numB;
-      });
-
-      sortedWinners.forEach(([key, winner]) => {
-        const p = document.createElement("p");
-        p.textContent = winner;
-        p.className = "comment";
-        right.appendChild(p);
-      });
-    } else {
-      right.innerHTML += `<h1 class=${"topLeft"}>Winners</h1>
-                          <div id="hello" class="hello"> </div>`;
-      const hello = document.getElementById("hello");
-      const p = document.createElement("p");
-      p.textContent = "No winners yet!";
-      p.className = "comment";
-      right.appendChild(p);
-    }
-  });
-}
-
-function writeComment(comment) {
-  const commentsRef = ref(database, "/comments");
-  get(commentsRef)
-    .then((snapshot) => {
-      const data = snapshot.val() || {};
-      const newKey = `comment${Object.keys(data).length + 1}`;
-
-      const updates = {};
-      updates[newKey] = comment;
-
-      set(commentsRef, { ...data, ...updates })
-        .then(() => {
-          displayComments();
-        })
-        .catch((e) => {
-          alert(e);
-        });
-    })
-    .catch((e) => {
-      alert(e);
+    comments.addEventListener("click", () => {
+      commentText.style.opacity = 0;
+      if (alerted != true) {
+        alert(
+          "Click on the comment section to hide the comment input and then Press `C` to comment again"
+        );
+        alerted = true;
+      }
     });
+
+    window.addEventListener("keypress", (e) => {
+      if (e.key === "c") {
+        commentText.style.opacity = 1;
+      }
+    });
+  } else {
+    alert("Please enter your name");
+    window.location.reload();
+  }
 }
 
-function displayComments() {
-  const commentsRef = ref(database, "/comments");
-  onValue(commentsRef, (snapshot) => {
-    const data = snapshot.val();
-    comments.innerHTML = "";
-
-    if (data) {
-      comments.innerHTML += `<h1 class=${"topLeft"}>Comments</h1>
-                          <div id="hello" class="hello"> </div>`;
-      const hello = document.getElementById("hello");
-
-      // Convert data to an array of [key, value] pairs
-      const sortedComments = Object.entries(data).sort(([keyA], [keyB]) => {
-        // Extract numbers and sort by them
-        const numA = parseInt(keyA.replace(/\D/g, ""), 10);
-        const numB = parseInt(keyB.replace(/\D/g, ""), 10);
-        return numA - numB;
-      });
-
-      sortedComments.forEach(([key, comment]) => {
-        const p = document.createElement("p");
-        p.textContent = comment;
-        p.className = "comment";
-        comments.appendChild(p);
-      });
-    } else {
-      comments.innerHTML += `<h1 class=${"topLeft"}>Comments</h1>
-                          <div id="hello" class="hello"> </div>`;
-      const hello = document.getElementById("hello");
-      const p = document.createElement("p");
-      p.textContent = "No comments yet!";
-      p.className = "comment";
-      comments.appendChild(p);
-    }
-  });
-}
-
-displayWinners();
-displayComments();
-
-xyzos.addEventListener("mouseover", () => {
-  const width = middle.clientWidth;
-  const height = middle.clientHeight;
-
-  const buttonWidth = xyzos.offsetWidth;
-  const buttonHeight = xyzos.offsetHeight;
-
-  const randomX = Math.floor(Math.random() * (width - buttonWidth));
-  const randomY = Math.floor(Math.random() * (height - buttonHeight));
-  button.style.position = "absolute";
-  button.style.left = `${randomX}px`;
-  button.style.top = `${randomY}px`;
-});
-xyzos.addEventListener("click", () => {
-  alert("You clicked me!");
-  writeWinnerData(username);
-});
-
-commentText.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    writeComment(username + ": " + commentText.value);
-    commentText.value = "";
-  }
-});
-
-comments.addEventListener("click", () => {
-  commentText.style.opacity = 0;
-  if (alerted != true) {
-    alert(
-      "Click on the comment section to hide the comment input and then Press `C` to comment again"
-    );
-    alerted = true;
-  }
-});
-
-window.addEventListener("keypress", (e) => {
-  if (e.key === "c") {
-    commentText.style.opacity = 1;
-  }
-});
+startTheGame();

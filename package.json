@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "bad-words": "^3.0.4",
     "firebase": "^10.12.5",
     "install": "^0.13.0",
     "npm": "^10.8.2"
