@@ -240,16 +240,16 @@ function startTheGame() {
         alerted = true;
       }
     });
-
-    window.addEventListener("keypress", (e) => {
-      if (e.key === "c") {
-        commentText.style.opacity = 1;
-      }
-    });
   } else {
     alert("Please enter your name");
     window.location.reload();
   }
 }
+
+window.addEventListener("keypress", (e) => {
+  if (e.key === "c") {
+    commentText.style.opacity = 1;
+  }
+});
 
 startTheGame();
