@@ -167,3 +167,4 @@ commentText.addEventListener("keypress", (e) => {
     commentText.value = "";
   }
 });
+

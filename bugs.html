@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report a Bug</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="backButton">
+      <button onclick="location.href='/index.html'"">Back</button>
+    </div>
+    <div class="containerMain">
+      <div class="mainBugs">
+        <div id="bugs" class="bugs"></div>
+      </div>
+      <div class="main-content">
+        <div class="bugReport">
+          <div class="form">
+            <h1>What issue are you facing?</h1>
+            <input id="title" type="text" placeholder="Title" />
+            <textarea
+              style="
+                height: 200px;
+                width: 100%;
+                resize: none;
+                overflow: auto;
+                vertical-align: top;
+                padding: 24px;
+                border-radius: 5px;
+                border: 1px solid rgb(128, 128, 128);
+              "
+              id="description"
+              placeholder="Description"
+            ></textarea>
+            <button id="reportBtn">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="module" src="bugs.js"></script>
+</html>
