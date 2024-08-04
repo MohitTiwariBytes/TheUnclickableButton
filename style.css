@@ -218,3 +218,10 @@ summary {
   box-sizing: border-box;
   transition: all 0.4s ease;
 }
+
+.note {
+  position: fixed;
+  top: 20px;
+  left: 420px;
+  z-index: 1000000000;
+}

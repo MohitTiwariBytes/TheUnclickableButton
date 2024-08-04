@@ -47,6 +47,9 @@ function startTheGame() {
     }
 
     function writeWinnerData(name) {
+      const min = 0;
+      const max = 29892329;
+      const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
       const winnersRef = ref(database, "winners");
       get(winnersRef)
         .then((snapshot) => {
@@ -60,7 +63,7 @@ function startTheGame() {
             return;
           }
 
-          const newKey = `winner${Object.keys(data).length + 1}`;
+          const newKey = `${randomNum}`;
           const updates = {};
           updates[newKey] = name;
 

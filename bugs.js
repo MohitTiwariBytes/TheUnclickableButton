@@ -86,3 +86,5 @@ reportBugButton.addEventListener("click", () => {
 });
 
 displayBugs();
+
+
