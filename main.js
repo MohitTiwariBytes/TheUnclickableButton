@@ -27,6 +27,7 @@ const analytics = getAnalytics(app);
 const database = getDatabase();
 
 const filter = new Filter();
+let isCursorOnButtonBol = false;
 
 const button = document.getElementById("button");
 const xyzos = document.getElementById("xyzos");
@@ -141,6 +142,20 @@ function startTheGame() {
         });
     }
 
+    function isCursorOnButton(event) {
+      const rect = button.getBoundingClientRect();
+      if (
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom
+      ) {
+        isCursorOnButtonBol = true;
+      } else {
+        isCursorOnButtonBol = false;
+      }
+    }
+
     function displayComments() {
       const commentsRef = ref(database, "/comments");
       onValue(commentsRef, (snapshot) => {
@@ -190,13 +205,15 @@ function startTheGame() {
 
       const randomX = Math.floor(Math.random() * (width - buttonWidth));
       const randomY = Math.floor(Math.random() * (height - buttonHeight));
-      button.style.position = "absolute";
-      button.style.left = `${randomX}px`;
-      button.style.top = `${randomY}px`;
     });
-    xyzos.addEventListener("click", () => {
-      alert("You clicked me!");
-      writeWinnerData(username);
+    xyzos.addEventListener("click", (e) => {
+      isCursorOnButton(e);
+      if (isCursorOnButtonBol) {
+        alert("You Clicked me yay!");
+        writeWinnerData(username);
+      } else {
+        alert("You didn't click me!");
+      }
     });
 
     commentText.addEventListener("keypress", (e) => {
