@@ -116,11 +116,14 @@ function startTheGame() {
     }
 
     function writeComment(comment) {
+      const min = 0;
+      const max = 29892329;
+      const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
       const commentsRef = ref(database, "/comments");
       get(commentsRef)
         .then((snapshot) => {
           const data = snapshot.val() || {};
-          const newKey = `comment${Object.keys(data).length + 1}`;
+          const newKey = `${randomNum}`;
 
           const updates = {};
           updates[newKey] = filter.clean(comment); // Check if the comment has bad words before saving
