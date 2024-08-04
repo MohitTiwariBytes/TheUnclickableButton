@@ -198,6 +198,7 @@ button {
   position: fixed;
   top: 20px;
   left: 20px;
+  z-index: 1000000000000000;
 }
 
 .bug {
@@ -221,7 +222,20 @@ summary {
 
 .note {
   position: fixed;
-  top: 20px;
+  top: 21px;
   left: 420px;
   z-index: 1000000000;
+}
+
+.haneesh {
+  position: fixed;
+  top: 20px;
+  left: 920px;
+  z-index: 1000000000;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.haneesh:hover {
+  scale: 1.1;
 }
