@@ -166,6 +166,10 @@ button1.addEventListener("mouseover", () => {
 
   const randomX = Math.floor(Math.random() * (width - buttonWidth));
   const randomY = Math.floor(Math.random() * (height - buttonHeight));
+
+  button.style.position = "absolute";
+  button.style.left = `${randomX}px`;
+  button.style.top = `${randomY}px`;
 });
 
 button1.addEventListener("click", () => {
