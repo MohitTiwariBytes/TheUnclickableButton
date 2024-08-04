@@ -117,4 +117,13 @@ button {
 
 .hello {
   margin-top: 114px;
+  position: relative;
+  z-index: 1000000;
+  overflow-y: auto;
+}
+
+.right {
+  overflow-y: auto;
+  position: absolute;
+  z-index: 100000000;
 }

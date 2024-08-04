@@ -58,7 +58,6 @@ function writeWinnerData(name) {
       alert(e);
     });
 }
-
 function displayWinners() {
   const winnersRef = ref(database, "winners");
   onValue(winnersRef, (snapshot) => {
@@ -73,16 +72,23 @@ function displayWinners() {
         const p = document.createElement("p");
         p.textContent = winner;
         p.className = "comment";
-
-        hello.appendChild(p);
+        right.appendChild(p);
       });
+    } else {
+      right.innerHTML += `<h1 class=${"topLeft"}>Winners</h1>
+      <div id="hello" class="hello"> </div>`;
+      const hello = document.getElementById("hello");
+      const p = document.createElement("p");
+      p.textContent = "No winners yet!";
+      p.className = "comment";
+      right.appendChild(p);
     }
   });
 }
 
 //CODED BY MOHIT TIWARI USING THIS CODE ANYWHERE ELSE WITHOUT MY PERMISSON IS STRICTLY PROHIBITED!!!!!
 
-function writeComment(comment) {
+function writeComment(comment, commentBy) {
   const commentsRef = ref(database, "/comments");
   get(commentsRef)
     .then((snapshot) => {
@@ -117,13 +123,23 @@ function displayComments() {
         const p = document.createElement("p");
         p.textContent = comment;
         p.className = "comment";
-        hello.appendChild(p);
+        comments.appendChild(p);
       });
+    } else {
+      comments.innerHTML += `<h1 class=${"topLeft"}>Comments</h1>
+                          <div id="hello" class="hello"> </div>`;
+      const hello = document.getElementById("hello");
+      const p = document.createElement("p");
+      p.textContent = "No comments yet!";
+      p.className = "comment";
+      comments.appendChild(p);
     }
   });
 }
 displayWinners();
 displayComments();
+
+console.log("Hello");
 
 button1.addEventListener("mouseover", () => {
   const width = middle.clientWidth;
@@ -147,7 +163,7 @@ button1.addEventListener("click", () => {
 
 commentText.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
-    writeComment(commentText.value);
+    writeComment(username + ": " + commentText.value);
     commentText.value = "";
   }
 });
