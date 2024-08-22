@@ -1,9 +1,9 @@
-# Click Me If You Can
+# TheUnclickableButton
 
-Welcome to Click Me If You Can! This is a fun and interactive game where you can compete with other players and aim to get on the winner list by clicking a special button. Here’s everything you need to get started:
+Welcome to TheUnclickableButton! This is a fun and interactive game where you can compete with other players and aim to get on the winner list by clicking a special button. Here’s everything you need to get started:
 
 ## Overview
-**Click Me If You Can** is a game where you engage with other players in real-time by clicking a button. Each click counts towards your goal of making it onto the winner list. Compete to be the fastest and most accurate clicker!
+**TheUnclickableButton** is a game where you engage with other players in real-time by clicking a button. Each click counts towards your goal of making it onto the winner list. Compete to be the fastest and most accurate clicker!
 
 ## Features
 -- Chat with Other Players: Communicate and strategize with fellow players in the chat room.
@@ -34,5 +34,5 @@ For any further questions or support, please contact me at Hackclub slack @Mohit
 -- Respect: Engage with others respectfully and positively.
 -- Fun First: Remember, it’s all about having fun!
 
-Thank you for playing Click Me If You Can! Enjoy the game and may the best clicker win!
+Thank you for playing TheUnclickableButton! Enjoy the game and may the best clicker win!
 
